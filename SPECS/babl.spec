@@ -18,8 +18,8 @@
 
 Summary:	A dynamic, any to any, pixel format conversion library
 Name:		babl
-Version:	0.1.86
-Release:	4%{?dist}
+Version:	0.1.114
+Release:	1%{?dist}
 
 # Compute some version related macros
 # Ugly hack, you need to get your quoting backslashes/percent signs straight
@@ -75,17 +75,16 @@ This package contains documentation needed for developing with %{name}.
 %autosetup -p1
 
 %build
-%meson
+%meson \
+    -Dgi-docgen=disabled 
 %meson_build
 
 %install
 %meson_install
 
 mkdir -p "%{buildroot}/%{develdocdir}"
-cp -pr docs/graphics docs/*.html docs/babl.css "%{buildroot}/%{develdocdir}"
-rm -f "%{buildroot}/%{develdocdir}"/graphics/meson.build
-rm -f "%{buildroot}/%{develdocdir}"/graphics/.gitignore
-
+cp -pr "%{_vpath_builddir}"/docs/* "%{buildroot}/%{develdocdir}"
+rm -f "%{buildroot}/%{develdocdir}/index.html.tmp"
 
 %check
 # skip tests known to be problematic in a specific version
@@ -108,6 +107,7 @@ popd
 %files
 %license docs/COPYING*
 %doc AUTHORS NEWS
+%{_bindir}/babl
 %{_libdir}/libbabl-%{apiver}.so.0*
 %{_libdir}/babl-%{apiver}/
 %dir %{_libdir}/girepository-1.0
@@ -116,7 +116,7 @@ popd
 %files devel
 %{_includedir}/babl-%{apiver}/
 %{_libdir}/libbabl-%{apiver}.so
-%{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/pkgconfig/%{name}-%{apiver}.pc
 %dir %{_datadir}/gir-1.0
 %{_datadir}/gir-1.0/Babl-%{apiver}.gir
 %{_datadir}/vala/
@@ -125,6 +125,12 @@ popd
 %doc %{develdocdir}
 
 %changelog
+* Tue May 20 2025 Josef Ridky <jridky@redhat.com> - 0.1.114-1
+- rebase to the latest upstream (RHEL-88142)
+
+* Wed Apr 23 2025 Josef Ridky <jridky@redhat.com> - 0.1.112-1
+- rebase to the latest upstream (RHEL-88142)
+
 * Wed Jul 20 2022 Josef Ridky <jridky@redhat.com> - 0.1.86-4
 - fix FTBFS by adding openssh-clients into BuildRequires (#2105618)
 
